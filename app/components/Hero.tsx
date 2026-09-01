@@ -24,7 +24,7 @@ export default function Hero() {
         </div>
         <div className="text-[1.1rem] leading-relaxed pr-8">
           <p>
-            My name is David Shahi. I'm from Nepal, but currently I'm based in Dubai. I have experience in creating and editing music, dance, scenery and social media videos (such as Reels and TikTok). I'm eager to work hard to fuel my skills.
+            My name is David Shahi. I'm from Nepal, but currently I'm based in Jumeirah, Dubai. I have experience in making and editing videos,content creating and handling the  social media videos . I'm eager to work hard to fuel my skills.
           </p>
         </div>
       </div>

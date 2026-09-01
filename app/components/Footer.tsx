@@ -3,8 +3,8 @@ export default function Footer() {
     <footer className="mt-40 mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-10">
       <div>
         <div className="text-zinc-500 text-sm mb-2">Email</div>
-        <a href="mailto:katerina.kalinicheva@gmail.com" className="text-lg font-medium hover:underline">
-          katerina.kalinicheva@gmail.com
+        <a href="mailto:Davidthakuri195@gmail.com" className="text-lg font-medium hover:underline">
+          Davidthakuri195@gmail.com
         </a>
       </div>
       <div>
