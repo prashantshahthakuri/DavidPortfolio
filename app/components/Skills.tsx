@@ -27,7 +27,7 @@ export default function Skills() {
           <div>
             <h3 className={`${playfair.className} text-4xl mb-6`}>Tools</h3>
             <div className="flex flex-wrap gap-3">
-              {["Adobe Premier Pro", "Final Cut Pro", "After Effect"].map(tool => (
+              {["Adobe Premier Pro", "Capcut", "Canva", "Higgsfield Sedance"].map(tool => (
                 <span key={tool} className="border border-black/30 rounded-[30px] px-5 py-2 text-sm whitespace-nowrap">{tool}</span>
               ))}
             </div>
