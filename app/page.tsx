@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="bg-[#fafafa] min-h-screen text-[#1a1a1a] px-8 py-10 max-w-[1400px] mx-auto">
       {/* Header */}
-      <header className="flex justify-between items-center mb-24">
+      <header className="flex justify-between items-center mb-24 bg-[#553f3f] text-white -mx-8 -mt-10 px-8 py-5">
         <div className="text-xl tracking-[0.2em] font-medium">David Shahi</div>
         <nav className="flex gap-8 text-sm font-medium">
           <a href="#about" className="hover:opacity-70 transition-opacity">About me</a>
