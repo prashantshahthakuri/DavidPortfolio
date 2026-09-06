@@ -7,7 +7,7 @@ export default function Projects() {
   return (
     <section id="projects" className="mt-40">
       <div className="flex items-center gap-6 mb-12">
-        <div className="h-[1px] w-16 bg-black"></div>
+        <div className="h-[1px] w-16 bg-black dark:bg-white"></div>
         <h2 className={`${playfair.className} text-5xl md:text-6xl tracking-tight`}>
           Projects
         </h2>
