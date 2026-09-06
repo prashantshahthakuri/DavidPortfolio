@@ -1,3 +1,4 @@
+import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
@@ -5,22 +6,13 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="bg-[#fafafa] min-h-screen text-[#1a1a1a] px-8 py-10 max-w-[1400px] mx-auto">
-      {/* Header */}
-      <header className="flex justify-between items-center mb-24 bg-[#553f3f] text-white -mx-8 -mt-10 px-8 py-5">
-        <div className="text-xl tracking-[0.2em] font-medium">David Shahi</div>
-        <nav className="flex gap-8 text-sm font-medium">
-          <a href="#about" className="hover:opacity-70 transition-opacity">About me</a>
-          <a href="#projects" className="hover:opacity-70 transition-opacity">Projects</a>
-          <a href="#skills" className="hover:opacity-70 transition-opacity">Skills</a>
-        </nav>
-      </header>
-
+    <div className="bg-[#fafafa] dark:bg-[#121212] min-h-screen text-[#1a1a1a] dark:text-[#f4f4f5] px-4 sm:px-8 py-6 sm:py-10 max-w-[1400px] mx-auto transition-colors duration-300">
+      <Navbar />
       <Hero />
       <Projects />
       <Skills />
-
       <Footer />
     </div>
   );
 }
+
