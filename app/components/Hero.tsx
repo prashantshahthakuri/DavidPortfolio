@@ -16,10 +16,10 @@ export default function Hero() {
       <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-12 items-start">
         <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-zinc-200">
           <Image
-            src="/heroimage.jpeg"
+            src="/hero.jpeg"
             alt="Videographer working"
             fill
-            className="object-cover object-[center_30%]"
+            className="object-cover object-[center_10%]"
             priority
           />
         </div>
