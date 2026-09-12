@@ -32,6 +32,12 @@ export default function Navbar() {
           >
             Skills
           </a>
+          <a
+            href="#contact"
+            className="hover:opacity-75 transition-opacity"
+          >
+            Contact
+          </a>
         </nav>
 
         {/* Vertical divider */}
