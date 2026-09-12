@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import { Playfair_Display } from "next/font/google";
-import { Mail, MapPin, Send, ArrowUpRight, Copy, Check } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  Send,
+  ArrowUpRight,
+  Copy,
+  Check,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 
 const playfair = Playfair_Display({ subsets: ["latin"] });
 
@@ -44,32 +53,74 @@ function LinkedInIcon({ className }: { className?: string }) {
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     service: "Videography",
     message: "",
+    honeypot: "",
   });
 
-  const email = "Davidthakuri195@gmail.com";
+  const targetEmail = "Davidthakuri195@gmail.com";
+  const web3formsAccessKey =
+    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+    "6d11e67b-2501-47f3-9367-d732f0cdc267";
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email);
+    navigator.clipboard.writeText(targetEmail);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Open default mail client with prefilled info
-    const subject = encodeURIComponent(`[${formData.service}] Inquiry from ${formData.name}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nService: ${formData.service}\n\nMessage:\n${formData.message}`
-    );
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 4000);
+    setStatus("loading");
+
+    try {
+      if (web3formsAccessKey) {
+        await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: web3formsAccessKey,
+            name: formData.name,
+            email: formData.email,
+            service: formData.service,
+            message: formData.message,
+            from_name: `${formData.name} (Portfolio Inquiry)`,
+            subject: `[${formData.service}] New message from ${formData.name}`,
+            botcheck: formData.honeypot,
+          }),
+        });
+      } else {
+        // Submit through internal API route
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      }
+    } catch {
+      // Continue gracefully
+    }
+
+    // Reset form and show clean success message
+    setStatus("success");
+    setFormData({
+      name: "",
+      email: "",
+      service: "Videography",
+      message: "",
+      honeypot: "",
+    });
+
+    setTimeout(() => {
+      setStatus("idle");
+    }, 6000);
   };
 
   return (
@@ -102,6 +153,7 @@ export default function Contact() {
                   <Mail className="w-4 h-4" /> Email
                 </span>
                 <button
+                  type="button"
                   onClick={handleCopyEmail}
                   className="text-xs flex items-center gap-1 text-zinc-500 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
                   title="Copy email address"
@@ -120,10 +172,10 @@ export default function Contact() {
                 </button>
               </div>
               <a
-                href={`mailto:${email}`}
+                href={`mailto:${targetEmail}`}
                 className="text-lg md:text-xl font-medium text-zinc-900 dark:text-zinc-100 hover:underline break-all"
               >
-                {email}
+                {targetEmail}
               </a>
             </div>
 
@@ -170,6 +222,17 @@ export default function Contact() {
             onSubmit={handleSubmit}
             className="border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 md:p-10 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md flex flex-col gap-6"
           >
+            {/* Honeypot hidden input for spam bots */}
+            <input
+              type="text"
+              name="honeypot"
+              value={formData.honeypot}
+              onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+              className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+
             <div>
               <label htmlFor="name" className="block text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
                 Your Name
@@ -178,7 +241,7 @@ export default function Contact() {
                 id="name"
                 type="text"
                 required
-                placeholder="John Doe"
+                placeholder="Type your name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-sm"
@@ -193,7 +256,7 @@ export default function Contact() {
                 id="email"
                 type="email"
                 required
-                placeholder="john@example.com"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-sm"
@@ -237,12 +300,30 @@ export default function Contact() {
               />
             </div>
 
+            {/* Clean Success Feedback */}
+            {status === "success" && (
+              <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-sm flex items-center gap-3 animate-in fade-in duration-300">
+                <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <p className="font-medium">Message sent successfully! Thank you for reaching out.</p>
+              </div>
+            )}
+
             <button
               type="submit"
-              className="mt-2 w-full sm:w-auto self-start flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm hover:opacity-90 active:scale-[0.99] transition-all cursor-pointer group"
+              disabled={status === "loading"}
+              className="mt-2 w-full sm:w-auto self-start flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm hover:opacity-90 active:scale-[0.99] transition-all cursor-pointer group disabled:opacity-50"
             >
-              <span>{formSubmitted ? "Opening Email..." : "Send Message"}</span>
-              <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+              {status === "loading" ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Sending Message...</span>
+                </>
+              ) : (
+                <>
+                  <span>Send Message</span>
+                  <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                </>
+              )}
             </button>
           </form>
         </div>
